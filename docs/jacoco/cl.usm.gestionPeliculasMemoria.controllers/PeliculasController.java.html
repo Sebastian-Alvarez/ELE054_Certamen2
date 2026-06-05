@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PeliculasController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gestion_peliculas_memoria</a> &gt; <a href="index.source.html" class="el_package">cl.usm.gestionPeliculasMemoria.controllers</a> &gt; <span class="el_source">PeliculasController.java</span></div><h1>PeliculasController.java</h1><pre class="source lang-java linenums">package cl.usm.gestionPeliculasMemoria.controllers;
+
+import cl.usm.gestionPeliculasMemoria.entities.Pelicula;
+import cl.usm.gestionPeliculasMemoria.services.PeliculasService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+public class PeliculasController {
+
+    private PeliculasService peliculasService;
+
+    @Autowired
+<span class="fc" id="L18">    public PeliculasController(PeliculasService peliculasService) {</span>
+<span class="fc" id="L19">        this.peliculasService =peliculasService;</span>
+<span class="fc" id="L20">    }</span>
+
+    @GetMapping(&quot;/peliculas&quot;)
+    public ResponseEntity&lt;List&lt;Pelicula&gt;&gt; getAll(@RequestParam(required = false) String q) {
+        try {
+<span class="pc bpc" id="L25" title="1 of 4 branches missed.">            if (q != null &amp;&amp; !q.isEmpty()) {</span>
+<span class="fc" id="L26">                List&lt;Pelicula&gt; filtradas = this.peliculasService.filter(q);</span>
+<span class="fc" id="L27">                return ResponseEntity.ok(filtradas);</span>
+            }
+<span class="fc" id="L29">            List&lt;Pelicula&gt; peliculas = this.peliculasService.getAll();</span>
+<span class="fc" id="L30">            return ResponseEntity.ok(peliculas);</span>
+<span class="fc" id="L31">        } catch (Exception ex) {</span>
+<span class="fc" id="L32">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @PostMapping(&quot;/peliculas&quot;)
+    public ResponseEntity&lt;?&gt; createPelicula(@RequestBody @Valid Pelicula pelicula) {
+<span class="fc" id="L38">        Pelicula res = this.peliculasService.createPelicula(pelicula);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (res != null) {</span>
+<span class="fc" id="L40">            return ResponseEntity.ok(res);</span>
+        }
+<span class="fc" id="L42">        return ResponseEntity.internalServerError().build();</span>
+    }
+
+    @GetMapping(&quot;/peliculas/{id}&quot;)
+    public ResponseEntity&lt;Pelicula&gt; findById(@PathVariable String id) {
+        try {
+<span class="fc" id="L48">            Pelicula pelicula = this.peliculasService.findById(id);</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (pelicula == null) {</span>
+<span class="fc" id="L51">                return ResponseEntity.notFound().build();</span>
+            }
+<span class="fc" id="L53">            return ResponseEntity.ok(pelicula);</span>
+<span class="fc" id="L54">        } catch (Exception ex) {</span>
+<span class="fc" id="L55">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @GetMapping(&quot;/peliculas/{id}/comentarios&quot;)
+    public ResponseEntity&lt;?&gt; getComentarios(@PathVariable String id) {
+        try {
+<span class="fc" id="L62">            Pelicula pelicula = this.peliculasService.findById(id);</span>
+
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if (pelicula == null) {</span>
+<span class="fc" id="L65">                return ResponseEntity.notFound().build();</span>
+            }
+<span class="fc" id="L67">            return ResponseEntity.ok(pelicula.getComentarios());</span>
+<span class="fc" id="L68">        } catch (Exception ex) {</span>
+<span class="fc" id="L69">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
